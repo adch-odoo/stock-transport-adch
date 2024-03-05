@@ -1,7 +1,7 @@
 {
     'name' : 'Stock inventory',
     'version' : "1.0",
-    'category': 'Human Resources/Fleet',
+    'category': 'Accounting/Fleet',
     'category': "",
     'discription' : "",
     'depends': ['stock'],

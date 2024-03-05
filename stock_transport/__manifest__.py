@@ -3,7 +3,7 @@
     "version": "1.2",
     "summary": "transport",
     "sequence": 10,
-    'depends': ['stock_picking_batch', 'fleet'],
+    'depends': ['base','mail','stock_picking_batch', 'fleet'],
     "description": """
         Easy to use Stock Transport App
     """,
