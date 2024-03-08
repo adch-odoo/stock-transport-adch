@@ -5,35 +5,19 @@ class StockPickingBatch(models.Model):
 
     dock_id = fields.Many2one('stock.transport.dock', 'Dock')   
     vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle', required=True, store=True)
-    vehicle_category_id = fields.Many2one('fleet.vehicle.model.category', 'Category', store=True, readonly=False)
-    transfer_count = fields.Float(string="Transfers",compute="_compute_transfer_count",store=True)
-    line_count = fields.Float(string="Lines",compute="_compute_line_count",store="True")
+    vehicle_category_id = fields.Many2one('fleet.vehicle.model.category', 'Category',related="vehicle_id.category_id",store=True, readonly=False)
+
+    transfer_count = fields.Integer(string="Transfers",compute="_compute_transfer_count",store=True)
+    line_count = fields.Integer(string="Lines",compute="_compute_line_count",store="True")
+    
     load_weight = fields.Float(string = 'Load Weight', compute = '_compute_product_weight', store = True)
     load_volume = fields.Float(string = 'Load Volume', compute = '_compute_product_volume', store = True)
-    individual_volume = fields.Float(string='Individual Volume', compute='_compute_individual_volume', store=True)
     max_category_volume = fields.Float(related='vehicle_category_id.max_volume', store=True)
     max_category_weight = fields.Float(related='vehicle_category_id.max_weight', store=True)
     volume_percentage = fields.Float(string='Volume Percentage', compute='_compute_percentage', store=True)
     weight_percentage = fields.Float(string='Weight Percentage', compute='_compute_percentage', store=True)
 
-    @api.depends('move_line_ids.product_id', 'move_line_ids.quantity')
-    def _compute_product_weight(self):
-        for load in self:
-            load_weight = sum(move_line.product_id.weight * move_line.quantity for move_line in load.move_line_ids)
-            load.load_weight = load_weight
-
-    @api.depends('move_line_ids.product_id', 'move_line_ids.quantity')
-    def _compute_product_volume(self):
-        for load in self:
-            load_volume = sum(move_line.product_id.volume * move_line.quantity for move_line in load.move_line_ids)
-            load.load_volume = load_volume
-
-    @api.depends('move_line_ids.product_id', 'move_line_ids.quantity')
-    def _compute_individual_volume(self):
-        for load in self:
-            load.individual_volume = sum(move_line.product_id.volume * move_line.quantity for move_line in load.move_line_ids)
-
-    @api.depends('individual_volume', 'load_volume', 'load_weight', 'max_category_volume', 'max_category_weight')
+    @api.depends('load_volume', 'load_weight', 'max_category_volume', 'max_category_weight')
     def _compute_percentage(self):
         for load in self:
             if load.max_category_volume and load.load_volume:
@@ -65,9 +49,9 @@ class StockPickingBatch(models.Model):
     @api.depends('picking_ids')
     def _compute_transfer_count(self):
         for record in self:
-            transfer_count=len(record.picking_ids)
+            record.transfer_count=len(record.picking_ids)
 
     @api.depends('move_line_ids')
     def _compute_line_count(self):
         for record in self:
-            line_count=len(record.move_line_ids)
+            record.line_count=len(record.move_line_ids)

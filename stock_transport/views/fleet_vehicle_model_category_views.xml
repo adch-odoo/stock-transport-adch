@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Inherited tree view of 'fleet_vehicle_model_category' -->
     <record id="fleet_vehicle_model_category_view_tree" model="ir.ui.view">
         <field name="name">fleet.vehicle.model.category.tree</field>
         <field name="model">fleet.vehicle.model.category</field>

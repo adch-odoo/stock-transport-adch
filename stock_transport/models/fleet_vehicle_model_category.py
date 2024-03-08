@@ -7,7 +7,7 @@ class FleetVehicleModelCatogory(models.Model):
     max_weight = fields.Float(string="Max Weight (kg)")
     max_volume = fields.Float(string="Max Volume (m3)")
 
-    @api.depends("name", "max_weight", "max_volume")
+    @api.depends("name")
     def _compute_display_name(self):
         for record in self:
             record.display_name = (

@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 <odoo>
+    <!-- Inherited action of 'stock_picking_batch' -->
     <record id="stock_picking_batch.stock_picking_batch_action" model="ir.actions.act_window">
         <field name="view_mode">tree,kanban,form,graph,gantt</field>
         <field name="context">{'search_default_draft': True, 'search_default_in_progress':
             True, 'graph_mode': 'bar', 'graph_groupbys': ['scheduled_date','vehicle_category_id'],}</field>
     </record>
+
+    <!-- Inherited tree view of 'stock_picking' -->
     <record id="stock_picking_tree_view_inherited" model="ir.ui.view">
         <field name="name">stock.picking.tree.view</field>
         <field name="model">stock.picking</field>
@@ -15,6 +18,8 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Inherited form view of 'stock_picking_batch' -->
     <record id="stock_picking_batch_form_view_inherited" model="ir.ui.view">
         <field name="name">stock.picking.batch.form</field>
         <field name="model">stock.picking.batch</field>
@@ -22,13 +27,33 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='scheduled_date']" position="after">
                 <field name="dock_id" />
-                <field name="vehicle_id" />
-                <field name="vehicle_category_id" />
-                <field name="weight_percentage" widget="progressbar" />
-                <field name="volume_percentage" widget="progressbar" />
+                <field name="vehicle_id" placeholder="Third Party Provider" />
+                <field name="vehicle_category_id" placeholder="eg: Semi Truck" />
+                <div>
+                    <div class="d-flex justify-content-between" style="width:1rem">
+                        <p style="margin-right: 7rem">Weight</p>
+                        <div class="d-flex ms-5">
+                            <field name="load_weight" invisible="not vehicle_category_id"
+                                string="Weight" class="me-2 ms-5" />
+                            <field name="weight_percentage" invisible="not vehicle_category_id" string=""
+                                widget="progressbar" />
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between" style="width:15rem">
+                        <p style="margin-right: 7rem">Volume</p>
+                        <div class="d-flex ms-5">
+                            <field name="load_volume" invisible="not vehicle_category_id"
+                                string="Volume" class="me-2 ms-5" />
+                            <field name="volume_percentage" invisible="not vehicle_category_id" string=""
+                                widget="progressbar" />
+                        </div>
+                    </div>
+                </div>
             </xpath>
         </field>
     </record>
+
+    <!-- Gantt View -->
     <record id="stock_picking_batch_gantt_view" model="ir.ui.view">
         <field name="name">stock.picking.batch.gantt.view</field>
         <field name="model">stock.picking.batch</field>
@@ -39,20 +64,26 @@
                 default_group_by="dock_id,vehicle_id"
                 color="vehicle_id"
                 decoration-info="'state' == 'draft'">
-                <field name="load_weight" />
-                <field name="load_volume" />
+                <field name="state"/>
             </gantt>
         </field>
     </record>
+
+    <!-- Graph View -->
     <record id="stock_picking_batch_graph_view" model="ir.ui.view">
         <field name="name">stock.picking.batch.graph.view</field>
         <field name="model">stock.picking.batch</field>
         <field name="arch" type="xml">
-            <graph string="Batch Transfers" sample="1">
-                <field name="transfer_count"/>
-                <field name="line_count"/>
+            <graph string="Batch Transfers">
+                <field name="load_weight" string="Weight"/>
+                <field name="load_volume" string="Volume"/>
+                <field name="transfer_count" />
+                <field name="line_count" />
+                <field name="max_category_weight" invisible="1"/>
+                <field name="max_category_volume" invisible="1"/>
+                <field name="weight_percentage" invisible="1"/>
+                <field name="volume_percentage" invisible="1"/>
             </graph>
         </field>
     </record>
-
 </odoo>

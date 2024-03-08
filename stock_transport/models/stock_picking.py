@@ -9,8 +9,8 @@ class StockPicking(models.Model):
     def _compute_volume(self):
         for record in self:
             counted_volume = sum(
-                transfer.product_id.product_tmpl_id.volume * transfer.quantity
+                transfer.product_id.volume * transfer.quantity
                 for transfer in record.move_ids
-                if transfer.product_id and transfer.product_id.product_tmpl_id.volume
+                if transfer.product_id and transfer.product_id.volume
             )
             record.volume = counted_volume
